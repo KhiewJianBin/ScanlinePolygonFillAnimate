@@ -17,4 +17,4 @@ https://github.com/KhiewJianBin/ScanlinePolygonFillAnimate/assets/5699978/4fa50e
 3. Play
 
 ## Notes
-- Use Extension methods to draw
+- Uses Custom OnGUI Extension methods to draw
