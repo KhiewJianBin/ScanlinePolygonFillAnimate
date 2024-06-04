@@ -45,7 +45,7 @@ public class BoundaryFillAnimate : MonoBehaviour
         var ymax = vertices.Max(v => v.y);
 
         //Step 1. Loop though ymin -> ymax, per define step(size) , calculate intersection
-        for (float y = ymin; y < ymax; y+= Step)
+        for (float y = ymin; y < ymax + 1; y+= Step)
         {
             yLineP1 = new Vector2(-1000, y);
             yLineP2 = new Vector2(1000, y);
@@ -58,15 +58,16 @@ public class BoundaryFillAnimate : MonoBehaviour
             {
                 (Vector2 start, Vector2 end) line = (vertices[i], vertices[(i + 1) % vertices.Count]);
 
-                (bool isParrarel, bool isIntersect, Vector2 intersectPoint, Vector2 _) = GeometryUtils.IsLinesIntercept(yLineP1, yLineP2, line.start, line.end);
+                (bool isParallel, bool isIntersect, Vector2 intersectPoint, Vector2 _) = GeometryUtils.IsLinesIntercept(yLineP1, yLineP2, line.start, line.end);
 
-                if (!isParrarel && isIntersect)
+                if (!isParallel && isIntersect)
                 {
                     //Special Case Handeling
+                    // Case when intersection point is a vertex
                     // if the prevs point is the same as current point, means the point is a vertex,
                     // Check the prev line and current line if both ymin is the same
                     // if same, add again
-                    if(previntersectPoint == intersectPoint)
+                    if (previntersectPoint == intersectPoint)
                     {
                         (Vector2 start, Vector2 end) prevLine = (vertices[i-1], vertices[(i)]);
                         var prevLineymin = Mathf.Min(prevLine.start.y,prevLine.end.y);
@@ -75,18 +76,20 @@ public class BoundaryFillAnimate : MonoBehaviour
                         var prevLineymax = Mathf.Max(prevLine.start.y, prevLine.end.y);
                         var Lineymax = Mathf.Max(line.start.y, line.end.y);
 
-                        if (prevLineymin != Lineymin && prevLineymax != Lineymax) continue;
+                        if (prevLineymin != Lineymin && prevLineymax != Lineymax)
+                        {
+                            continue;
+                        }
                     }
 
                     intersectionPoints.Add(intersectPoint);
 
                     previntersectPoint = intersectPoint;
                 }
-
             }
 
             //Step 2. Sort Intersection points
-            intersectionPoints.OrderBy(p => p.x);
+            intersectionPoints = intersectionPoints.OrderBy(p => p.x).ToList();
 
             for (int i = 0; i < intersectionPoints.Count; i += 2)
             {
