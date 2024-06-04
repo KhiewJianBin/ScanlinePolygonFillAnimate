@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class BoundaryFillAnimate : MonoBehaviour
+public class ScanlinePolyFillAnimate : MonoBehaviour
 {
     [SerializeField] Camera cam;
 
